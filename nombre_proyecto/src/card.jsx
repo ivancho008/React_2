@@ -1,12 +1,26 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 
 export default function Card() {
   const [darkMode, setDarkMode] = useState(false);
-  const toggletheme = () => setDarkMode(!darkMode);
+
+  // 👉 Al cargar la página, revisamos si hay un valor guardado en localStorage
+  useEffect(() => {
+    const savedMode = localStorage.getItem("darkMode");
+    if (savedMode !== null) {
+      setDarkMode(savedMode === "true"); // localStorage guarda strings
+    }
+  }, []);
+
+  // 👉 Cada vez que darkMode cambie, lo guardamos en localStorage
+  useEffect(() => {
+    localStorage.setItem("darkMode", darkMode);
+  }, [darkMode]);
+
+  const toggleTheme = () => setDarkMode(!darkMode);
 
   return (
     <div
-      className={`max-w-sm mx-auto p-6 rounded-lg shadow-md ${
+      className={`max-w-sm mx-auto p-6 rounded-lg shadow-md transition-colors duration-300 ${
         darkMode ? "bg-gray-800 text-white" : "bg-white text-gray-900"
       }`}
     >
@@ -25,7 +39,7 @@ export default function Card() {
       </p>
 
       <button
-        onClick={toggletheme}
+        onClick={toggleTheme}
         className="mt-6 w-full py-2 rounded-lg border border-gray-300 hover:bg-gray-100 dark:hover:bg-gray-700 transition-colors"
       >
         {darkMode ? "Cambiar a modo claro" : "Cambiar a modo oscuro"}
